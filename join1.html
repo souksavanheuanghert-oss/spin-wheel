@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <title>หน้าลงทะเบียนผู้เล่น</title>
+    <style>
+        body { font-family: sans-serif; background: #1a1a1a; color: #fff; text-align: center; padding: 40px; }
+        input { padding: 10px; font-size: 16px; border-radius: 5px; border: none; margin-right: 10px; }
+        button { padding: 10px 20px; font-size: 16px; background-color: #28a745; color: white; border: none; border-radius: 5px; cursor: pointer; }
+    </style>
+</head>
+<body>
+    <h1>ลงทะเบียนเข้าร่วมวงล้อ</h1>
+    <input type="text" id="username" placeholder="กรอกชื่อของคุณ...">
+    <button onclick="submitName()">ส่งชื่อเข้าวงล้อ</button>
+    <div id="status" style="margin-top: 20px; color: #ffae02; font-weight: bold;"></div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-app.js";
+        import { getDatabase, ref, push } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-database.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyCVqPo6YRccJ_nP20sCwOQUE6sTMbIWYkk",
+            authDomain: "spin12-f1c8b.firebaseapp.com",
+            databaseURL: "https://spin12-f1c8b-default-rtdb.asia-southeast1.firebasedatabase.app",
+            projectId: "spin12-f1c8b",
+            storageBucket: "spin12-f1c8b.firebasestorage.app",
+            messagingSenderId: "324607174926",
+            appId: "1:324607174926:web:7458375db29f3ea2c68f5f",
+            measurementId: "G-8EGS10CTSP"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
+
+        window.submitName = function() {
+            const usernameInput = document.getElementById('username').value.trim();
+            const statusDiv = document.getElementById('status');
+
+            if (usernameInput === "") {
+                alert("กรุณากรอกชื่อก่อนกดส่งครับ!");
+                return;
+            }
+
+            const playersRef = ref(db, 'players');
+            push(playersRef, {
+                name: usernameInput // บันทึกด้วยคีย์ชื่อ 'name'
+            }).then(() => {
+                statusDiv.textContent = "บันทึกชื่อของคุณไปในวงล้อแล้ว!";
+                document.getElementById('username').value = "";
+            }).catch((error) => {
+                statusDiv.textContent = "เกิดข้อผิดพลาด: " + error.message;
+            });
+        };
+    </script>
+</body>
+</html>
